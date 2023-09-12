@@ -32,10 +32,12 @@ int speed = 25;
 float fadeAmt = 5;
 
 // Rotary Encoder Params
+/*
 int counter = 0;
 int currentStateCLK;
 int lastStateCLK;
 String currentDir ="";
+*/
 
 // hardware controls
 int inputA0 = analogRead(A0); // color
@@ -102,17 +104,15 @@ void setup() {
   chooseNextColorPalette(gTargetPalette);
 
   // Set rotary encoder pins as inputs
+  /*
 	pinMode(CLK,INPUT);
 	pinMode(DT,INPUT);
   // Read the initial state of CLK
 	lastStateCLK = digitalRead(CLK);
-	// Call updateEncoder() when any high/low changed seen
-	// on interrupt 0 (pin 2), or interrupt 1 (pin 3)
+	// Call updateEncoder() when any high/low changed seen on interrupt 0 (pin 2), or interrupt 1 (pin 3)
 	attachInterrupt(0, updateEncoder, CHANGE);
 	attachInterrupt(1, updateEncoder, CHANGE);
-
-  //
-
+  */
 
   // FastLED.addLeds<WS2812,DATA_PIN,RGB>(leds,NUM_LEDS);
   FastLED.setBrightness(bright);
@@ -168,7 +168,8 @@ switch (style_id) {
     doBpm();
     break;
   case 4:
-    doSinelon();
+    doRainbow();
+    // doSinelon();
     break;
   case 5:
     doJuggle();
@@ -185,10 +186,6 @@ switch (style_id) {
   // doTwinkly();
   //doBreathe();
   // fadeall();
-
-   /// doBreathe();
- // delay(5000);
-  // bright = 55;
   // doBreathe();
     // fastLED function params
   FastLED.show();  
@@ -204,6 +201,7 @@ switch (style_id) {
 }
 
 /// rotary encoder functions
+/*
 void updateEncoder(){
 	// Read the current state of CLK
 	currentStateCLK = digitalRead(CLK);
@@ -228,12 +226,12 @@ void updateEncoder(){
 		Serial.print(" | Counter: ");
 		Serial.println(counter);
 	}
-
+	// Serial.println("Rotary Detected: " + counter);
 	// Remember last CLK state
 	lastStateCLK = currentStateCLK;
 }
 
-
+*/
 void doBreathe(){
 
     // fade in 
@@ -278,17 +276,6 @@ void doBreathe(){
   }
 }
 
-void doVibeCheck(){
-  inputA0 = analogRead(A0); // color
-  inputA1 = analogRead(A1); // style
-  inputA2 = analogRead(A2); // speed/bright
-  // change hue val
-  hue_val = map(inputA0, 0, 1000, 0, 255);
-    // check for new style
-  style_id = map(inputA1, 0, 1000, 1, 7); 
-  // check for new style
-  speed = map(inputA2, 0, 1000, 1, 100); 
-}
 
 void doCylon(){
   bright = 100;
@@ -332,7 +319,7 @@ void doCylon(){
 }
 
 
-void rainbow() 
+void doRainbow() 
 {
   // FastLED's built-in rainbow generator
   fill_rainbow( leds, NUM_LEDS, gHue, 7);
@@ -376,17 +363,6 @@ void doJuggle() {
 
 
 
-/// UTILS ///
-float floatMap(float x, float in_min, float in_max, float out_min, float out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-void fadeall() { 
-  for(int i = 0; i < NUM_LEDS; i++) { 
-    leds[i].nscale8(250); 
-    
-    } 
-}
 
 void doTwinkly(){
      EVERY_N_SECONDS( SECONDS_PER_PALETTE ) { 
@@ -473,6 +449,34 @@ void drawTwinkles( CRGBSet& L)
   }
 }
 
+
+///////////////////////// UTILS ////////////////////////////////
+
+/// this checks for new potentiometer value and updates our params
+void doVibeCheck(){
+  inputA0 = analogRead(A0); // color
+  inputA1 = analogRead(A1); // style
+  inputA2 = analogRead(A2); // speed/bright
+  // change hue val
+  hue_val = map(inputA0, 0, 1000, 0, 255);
+    // check for new style
+  style_id = map(inputA1, 0, 1000, 1, 7); 
+  // check for new style
+  speed = map(inputA2, 0, 1000, 1, 100); 
+}
+
+
+
+float floatMap(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+void fadeall() { 
+  for(int i = 0; i < NUM_LEDS; i++) { 
+    leds[i].nscale8(250); 
+    
+    } 
+}
 
 //  This function takes a time in pseudo-milliseconds,
 //  figures out brightness = f( time ), and also hue = f( time )
