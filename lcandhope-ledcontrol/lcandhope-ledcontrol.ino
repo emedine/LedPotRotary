@@ -137,9 +137,9 @@ void loop() {
   hue_val = map(inputA0, 0, 1000, 0, 255);
   // check for new style
   style_id = map(inputA1, 0, 1000, 1, 7); 
+  // check for speed
+  speed = map(inputA2, 0, 1000, 1, 100); 
   // print out the value you read:
-
-
 
 /*
   Serial.println("--- new color -----");
@@ -158,11 +158,10 @@ void loop() {
 ///*
 switch (style_id) {
   case 1:
-    // do cylon
-    doBreathe();
+    doTwinkly();
     break;
   case 2:
-    doCylon();
+    doJuggle();
     break;
   case 3:
     doBpm();
@@ -172,13 +171,13 @@ switch (style_id) {
     // doSinelon();
     break;
   case 5:
-    doJuggle();
+    doCylon();
     break;
   case 6:
-    doTwinkly();
+    doBreathe();
     break;
   default:
-    doBreathe();
+    doNone();
     break;
 }
 //*/
@@ -232,6 +231,10 @@ void updateEncoder(){
 }
 
 */
+
+void doNone(){
+    fadeall();
+}
 void doBreathe(){
 
     // fade in 
@@ -350,13 +353,13 @@ void doBpm()
 }
 
 void doJuggle() {
-          // check to see if we're changing color or style
-        doVibeCheck();
+  // check to see if we're changing color or style
+   doVibeCheck();
   // eight colored dots, weaving in and out of sync with each other
   fadeToBlackBy( leds, NUM_LEDS, 20);
-  uint8_t dothue = 0;
+  uint8_t dothue = hue_val; // 0;
   for( int i = 0; i < 8; i++) {
-    leds[beatsin16( i+7, 0, NUM_LEDS-1 )] |= CHSV(dothue, 200, 255);
+    leds[beatsin16( i+7, 0, NUM_LEDS-1 )] |= CHSV(hue_val, 200, 255);
     dothue += 32;
   }
 }
@@ -461,8 +464,14 @@ void doVibeCheck(){
   hue_val = map(inputA0, 0, 1000, 0, 255);
     // check for new style
   style_id = map(inputA1, 0, 1000, 1, 7); 
-  // check for new style
-  speed = map(inputA2, 0, 1000, 1, 100); 
+  // check for current style-- if it's cylon, adjust spee
+  if(style_id == 5){
+      speed = map(inputA2, 0, 1000, 1, 100); 
+
+  } else {
+    speed = 25;
+  }
+
 }
 
 
